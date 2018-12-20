@@ -3,7 +3,21 @@ const Product = require("../models/product");
 exports.getProducts = (req, res, next) => {
   Product.fetchAll(products => {
     res.render("shop/product-list", {
-      products,
+      prods: products,
+      pageTitle: "All products",
+      path: "/products"
+    });
+  });
+};
+
+exports.getProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  Product.findById(prodId, product => {
+    console.log(product);
+  });
+  Product.fetchAll(products => {
+    res.render("shop/product-list", {
+      prods: products,
       pageTitle: "All products",
       path: "/products"
     });
@@ -13,7 +27,7 @@ exports.getProducts = (req, res, next) => {
 exports.getIndex = (req, res, next) => {
   Product.fetchAll(products => {
     res.render("shop/index", {
-      products,
+      prods: products,
       pageTitle: "Shop",
       path: "/"
     });
