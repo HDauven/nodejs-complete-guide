@@ -41,7 +41,6 @@ userSchema.methods.addToCart = function(product) {
       quantity: newQuantity
     });
   }
-
   const updatedCart = {
     items: updatedCartItems
   };

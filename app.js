@@ -1,26 +1,28 @@
 require("dotenv").config();
 const path = require("path");
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-const User = require("./models/user");
 const errorController = require("./controllers/error");
+const User = require("./models/user");
 
 const app = express();
 
 app.set("view engine", "ejs");
+app.set("views", "views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.findOne()
+  User.findById("5bab316ce0a7c75f783cb8a8")
     .then(user => {
-      console.log(user);
       req.user = user;
       next();
     })
@@ -29,6 +31,7 @@ app.use((req, res, next) => {
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(errorController.get404);
 
@@ -37,7 +40,7 @@ mongoose
   .connect(
     `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}/shop?retryWrites=true`
   )
-  .then(() => {
+  .then(result => {
     User.findOne().then(user => {
       if (!user) {
         const user = new User({
@@ -52,4 +55,6 @@ mongoose
     });
     app.listen(3000);
   })
-  .catch(err => console.log(err));
+  .catch(err => {
+    console.log(err);
+  });
