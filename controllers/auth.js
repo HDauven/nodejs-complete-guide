@@ -10,3 +10,9 @@ exports.postLogin = (req, res, next) => {
   res.session.isLoggedIn = true;
   res.redirect("/");
 };
+
+exports.postLogout = (req, res, next) => {
+  res.session.destroy(() => {
+    res.redirect("/");
+  });
+};
