@@ -68,6 +68,7 @@ mongoose
   .connect(MONGODB_URI)
   .then(result => {
     app.listen(3000);
+    console.log(process.env);
   })
   .catch(err => {
     console.log(err);
