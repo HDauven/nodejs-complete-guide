@@ -12,6 +12,8 @@ const multer = require("multer");
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
+const shopController = require("./controllers/shop");
+const isAuth = require("./middleware/is-auth");
 
 const { DB_USER, DB_PASS, DB_HOST } = process.env;
 const MONGODB_URI = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}/shop`;
@@ -59,12 +61,10 @@ app.use(
     store
   })
 );
-app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
   next();
 });
 
@@ -83,6 +83,14 @@ app.use((req, res, next) => {
     .catch(err => {
       next(new Error(err));
     });
+});
+
+app.post("/create-order", isAuth, shopController.postOrder);
+
+app.use(csrfProtection);
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use("/admin", adminRoutes);
